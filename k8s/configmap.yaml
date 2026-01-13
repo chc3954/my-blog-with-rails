@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-blog-config
+  namespace: my-blog
+data:
+  DB_DATABASE: "/rails/storage/production.sqlite3"
+  DB_Cache_DATABASE: "/rails/storage/production_cache.sqlite3"
+  DB_QUEUE_DATABASE: "/rails/storage/production_queue.sqlite3"
+  DB_CABLE_DATABASE: "/rails/storage/production_cable.sqlite3"

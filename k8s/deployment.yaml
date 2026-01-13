@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-blog-web
+  namespace: my-blog
+  labels:
+    app: my-blog
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-blog
+  strategy:
+    type: Recreate # Required for SQLite to avoid multi-writer issues
+  template:
+    metadata:
+      labels:
+        app: my-blog
+    spec:
+      containers:
+        - name: web
+          image: ghcr.io/chc3954/my-blog-with-rails:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          env:
+            - name: RAILS_ENV
+              value: "production"
+            - name: RAILS_MASTER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: rails-secrets
+                  key: master-key
+          envFrom:
+            - configMapRef:
+                name: my-blog-config
+          volumeMounts:
+            - name: storage-volume
+              mountPath: /rails/storage
+      imagePullSecrets:
+        - name: ghcr-secrets
+      volumes:
+        - name: storage-volume
+          persistentVolumeClaim:
+            claimName: rails-storage
