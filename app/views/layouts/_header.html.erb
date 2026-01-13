@@ -1,0 +1,15 @@
+<header class="bg-background sticky top-0 z-50 border-b">
+  <div class="container flex h-[var(--header-height)] items-center px-4">
+    <%= link_to "HC Blog", root_path, class: "text-lg font-semibold" %>
+    <nav class="ml-auto flex items-center gap-6">
+      <button data-action="click->dark-mode#toggle" class="h-9 w-9 rounded-md">
+        <span class="block dark:hidden">🌙</span>
+        <span class="hidden dark:block">☀️</span>
+      </button>
+      <%= link_to "Home", root_path, class: "hover:underline" %>
+      <%= link_to "Blog", blog_index_path, class: "hover:underline" %>
+      <%= link_to "Monitoring", monitoring_path, class: "hover:underline" %>
+      <%= link_to "About", about_path, class: "hover:underline" %>
+    </nav>
+  </div>
+</header>
