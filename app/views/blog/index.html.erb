@@ -1,6 +1,113 @@
-<%= content_for :title, "Blog" %>
+<% content_for :title, "Blog" %>
 
-<div>
-  <h1 class="font-bold text-4xl">Blog#index</h1>
-  <p>Find me in app/views/blog/index.html.erb</p>
+<div class="from-background to-background/80 min-h-screen bg-gradient-to-b">
+  <div class="container py-12">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-[200px_1fr] md:gap-8">
+      <!-- Left Sidebar - Desktop -->
+      <div class="hidden md:block">
+        <div class="sticky top-[var(--sticky-top)] space-y-6">
+          <div class="mb-8">
+            <h1 class="from-primary to-primary/60 bg-gradient-to-r bg-clip-text text-4xl font-bold text-transparent">
+              Blog
+            </h1>
+            <p class="text-muted-foreground mt-2">Latest updates</p>
+          </div>
+
+          <div class="space-y-4">
+            <h3 class="font-semibold text-lg">Tags</h3>
+            <nav class="space-y-2">
+              <a href="<%= blog_index_path %>" class="group hover:bg-primary/10 flex w-full items-center justify-between rounded-xl px-4 py-2 text-left transition-all <%= 'bg-primary/10' if params[:tag].nil? %>">
+                <span class="font-medium">All Posts</span>
+              </a>
+              <% @tags.each do |tag| %>
+              <a href="<%= blog_index_path(tag: tag) %>" class="group hover:bg-primary/10 flex w-full items-center justify-between rounded-xl px-4 py-2 text-left transition-all <%= 'bg-primary/10 text-primary' if params[:tag] == tag %>">
+                <span class="font-medium"><%= tag %></span>
+              </a>
+              <% end %>
+            </nav>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="space-y-8">
+        <!-- Mobile Header & Tags -->
+        <div class="md:hidden space-y-6">
+          <div class="mb-8">
+            <h1 class="from-primary to-primary/60 bg-gradient-to-r bg-clip-text text-4xl font-bold text-transparent">
+              Blog
+            </h1>
+            <p class="text-muted-foreground mt-2">Latest updates</p>
+          </div>
+
+          <!-- Mobile Tags Carousel/Grid -->
+          <div class="flex flex-wrap gap-2">
+            <a href="<%= blog_index_path %>" class="px-4 py-1.5 rounded-full text-sm border transition-colors <%= params[:tag].nil? ? 'bg-primary text-primary-foreground border-primary' : 'bg-background hover:bg-muted' %>">
+              All
+            </a>
+            <% @tags.each do |tag| %>
+            <a href="<%= blog_index_path(tag: tag) %>" class="px-4 py-1.5 rounded-full text-sm border transition-colors <%= params[:tag] == tag ? 'bg-primary text-primary-foreground border-primary' : 'bg-background hover:bg-muted' %>">
+              <%= tag %>
+            </a>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Posts Grid -->
+        <div class="grid gap-6">
+          <% if @posts.any? %>
+          <% @posts.each do |post| %>
+          <article class="group bg-card/30 hover:bg-card/50 border border-border hover:border-primary/50 rounded-xl p-6 transition-all">
+            <div class="flex flex-col md:flex-row gap-6">
+              <% if post[:cover] %>
+              <div class="w-full md:w-48 h-32 md:h-full rounded-lg overflow-hidden shrink-0">
+                <img src="<%= post[:cover] %>" alt="<%= post[:title] %>" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy">
+              </div>
+              <% end %>
+
+              <div class="flex-1 space-y-4">
+                <div class="space-y-2">
+                  <div class="flex items-center gap-3 text-sm text-muted-foreground">
+                    <time datetime="<%= post[:date] %>">
+                      <%= Date.parse(post[:date]).strftime("%B %d, %Y") if post[:date] %>
+                    </time>
+                    <% if post[:tags].any? %>
+                    <span>•</span>
+                    <div class="flex gap-2">
+                      <% post[:tags].each do |tag| %>
+                      <span class="text-primary/80"><%= tag %></span>
+                      <% end %>
+                    </div>
+                    <% end %>
+                  </div>
+
+                  <h2 class="text-2xl font-bold group-hover:text-primary transition-colors">
+                    <%= link_to post[:title], blog_path(post[:slug] || post[:id]) %>
+                  </h2>
+                </div>
+
+                <% if post[:summary] %>
+                <p class="text-muted-foreground line-clamp-2">
+                  <%= post[:summary] %>
+                </p>
+                <% end %>
+
+                <div class="pt-2">
+                  <span class="text-sm font-medium text-primary group-hover:translate-x-1 inline-flex items-center gap-1 transition-transform">
+                    Read more <span>→</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </article>
+          <% end %>
+          <% else %>
+          <div class="text-center py-12 text-muted-foreground">
+            <p>No posts found <%= "with tag '#{params[:tag]}'" if params[:tag] %>.</p>
+          </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
