@@ -25,7 +25,7 @@
 
 <body class="antialiased flex min-h-screen flex-col" data-controller="dark-mode">
   <%= render "layouts/header" %>
-  <main class="from-background to-background/80 min-h-screen bg-gradient-to-b">
+  <main class="<%= 'container' unless current_page?(root_path) %> from-background to-background/80 min-h-screen bg-gradient-to-b">
     <%= yield %>
   </main>
   <%= render "layouts/footer" %>

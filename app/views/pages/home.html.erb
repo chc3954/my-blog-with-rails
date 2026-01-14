@@ -1,4 +1,89 @@
-<div>
-  <h1 class="font-bold text-4xl">Pages#home</h1>
-  <p>Find me in app/views/pages/home.html.erb</p>
-</div>
+<%# Hero Section %>
+<section class="relative flex min-h-screen flex-col items-center justify-center py-12 overflow-hidden w-full">
+  <div class="absolute inset-0 w-full h-full" data-controller="particles" style="mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent), linear-gradient(to bottom, transparent, black 15%, black 85%, transparent); mask-composite: intersect; -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent), linear-gradient(to bottom, transparent, black 15%, black 85%, transparent); -webkit-mask-composite: source-in;">
+    <%# Canvas is handled by the particles controller %>
+  </div>
+
+  <div class="container relative z-10 text-center mx-auto px-4" data-controller="motion" data-motion-initial-value='{"opacity": 0, "y": 100}' data-motion-animate-value='{"opacity": 1, "y": 160}' data-motion-transition-value='{"duration": 0.8}'>
+    <h1 class="from-primary to-primary/60 bg-gradient-to-r bg-clip-text text-6xl font-bold text-transparent">
+      Hyunchul Cho
+    </h1>
+    <p class="text-muted-foreground mt-4 text-xl" data-controller="motion" data-motion-initial-value='{"opacity": 0}' data-motion-animate-value='{"opacity": 1}' data-motion-delay-value="0.5" data-motion-transition-value='{"duration": 0.8}'>
+      Full Stack Developer & DevOps Engineer
+    </p>
+    <div class="mt-8 flex justify-center gap-4" data-controller="motion" data-motion-initial-value='{"opacity": 0}' data-motion-animate-value='{"opacity": 1}' data-motion-delay-value="1" data-motion-transition-value='{"duration": 0.8}'>
+      <%= link_to "About Me", "/about", class: "bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-6 py-3 font-medium transition-colors" %>
+      <%= link_to "Read Blog", "/blog", class: "border-border hover:bg-accent rounded-lg border px-6 py-3 font-medium transition-colors" %>
+    </div>
+  </div>
+
+  <div class="absolute bottom-32 left-1/2 hidden -translate-x-1/2 cursor-pointer md:block" data-controller="scroll motion" data-scroll-target-value="blog-section" data-action="click->scroll#scrollTo" data-motion-initial-value='{"opacity": 0}' data-motion-animate-value='{"opacity": 1}' data-motion-delay-value="1.5" data-motion-transition-value='{"duration": 0.8}'>
+    <div class="animate-bounce"> <%# Tailwind animate-bounce mimics the y motion loop %>
+      <svg class="text-primary h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+      </svg>
+    </div>
+  </div>
+</section>
+
+<%# Blog Introduction Section %>
+<section id="blog-section" class="container py-24 mx-auto max-w-6xl px-4">
+  <div class="mx-auto max-w-3xl text-center" data-controller="motion" data-motion-in-view-value="true" data-motion-initial-value='{"opacity": 0, "y": 50}' data-motion-animate-value='{"opacity": 1, "y": 0}' data-motion-transition-value='{"duration": 0.8}'>
+    <h2 class="text-4xl font-bold">Welcome to My Blog</h2>
+    <p class="text-muted-foreground mt-6 text-lg">
+      This blog is powered by Notion API, bringing you the latest insights and thoughts on
+      software development, technology, and creative thinking. Explore my articles and join me
+      on this journey of continuous learning and innovation.
+    </p>
+    <div class="mt-8 inline-block transition hover:scale-105 active:scale-95">
+      <%= link_to "Explore Articles", "/blog", class: "bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-8 py-4 text-lg font-medium transition-colors inline-block" %>
+    </div>
+  </div>
+</section>
+
+<%# Skills & Expertise Section %>
+<section class="container py-24 mx-auto max-w-6xl px-4">
+  <div class="mx-auto max-w-3xl text-center" data-controller="motion" data-motion-in-view-value="true" data-motion-initial-value='{"opacity": 0, "y": 50}' data-motion-animate-value='{"opacity": 1, "y": 0}' data-motion-transition-value='{"duration": 0.8}'>
+    <h2 class="text-4xl font-bold">Skills & Expertise</h2>
+    <p class="text-muted-foreground mt-6 text-lg">
+      My technical skills and areas of expertise that help me build amazing digital
+      experiences.
+    </p>
+    <div class="mt-12 grid grid-cols-2 gap-8 md:grid-cols-4">
+      <% [
+          { title: "Languages", skills: ["Javascript", "Typescript", "Ruby", "Python", "C#", "Java"] },
+          { title: "Frontend", skills: ["React/NextJS", "Angular", "Three.js"] },
+          { title: "Backend", skills: ["ExpressJS", "NestJS", "Ruby on Rails", "PostgreSQL", "MongoDB", "MySQL"] },
+          { title: "DevOps & Cloud", skills: ["Docker / Kubernetes", "Terraform / Ansible", "Jenkins / ArgoCD", "AWS / Linux"] }
+        ].each do |category| %>
+      <div class="bg-card/30 rounded-xl p-6 transition hover:-translate-y-2.5">
+        <h3 class="text-xl font-semibold"><%= category[:title] %></h3>
+        <ul class="text-muted-foreground mt-4 space-y-2">
+          <% category[:skills].each do |skill| %>
+          <li><%= skill %></li>
+          <% end %>
+        </ul>
+      </div>
+      <% end %>
+    </div>
+  </div>
+</section>
+
+<%# Contact Section %>
+<section class="container py-24 mx-auto max-w-6xl px-4">
+  <div class="mx-auto max-w-3xl text-center" data-controller="motion" data-motion-in-view-value="true" data-motion-initial-value='{"opacity": 0, "y": 50}' data-motion-animate-value='{"opacity": 1, "y": 0}' data-motion-transition-value='{"duration": 0.8}'>
+    <h2 class="text-4xl font-bold">Get in Touch</h2>
+    <p class="text-muted-foreground mt-6 text-lg">
+      Interested in working together? Let's connect and discuss how we can create
+      something amazing.
+    </p>
+    <div class="mt-8 flex justify-center gap-4">
+      <a href="mailto:chc3954@gmail.com" class="bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-6 py-3 font-medium transition-colors">
+        Email Me
+      </a>
+      <a href="https://www.linkedin.com/in/hc-cho" target="_blank" rel="noopener noreferrer" class="border-border hover:bg-accent rounded-lg border px-6 py-3 font-medium transition-colors">
+        LinkedIn
+      </a>
+    </div>
+  </div>
+</section>
