@@ -11,5 +11,11 @@ class BlogController < ApplicationController
   end
 
   def show
+    service = NotionService.new
+    @post = service.fetch_post(params[:slug])
+
+    if @post.nil?
+      render file: "public/404.html", status: :not_found, layout: false
+    end
   end
 end
