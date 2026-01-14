@@ -44,7 +44,7 @@ class NotionService
   end
 
   def all_tags
-    # Fetch all published posts to extract unique tags
+    # Fetch all published posts to extract unique tags and their counts
     # Optimization: This could be cached or fetched separately if volume grows
     filter = {
       property: "Status",
@@ -58,13 +58,14 @@ class NotionService
       filter: filter
     )
 
-    tags = Set.new
+    tags = Hash.new(0)
     response.results.each do |page|
       page.properties["Tags"].multi_select.each do |tag|
-        tags.add(tag.name)
+        tags[tag.name] += 1
       end
     end
-    tags.to_a.sort
+    # Sort by count descending
+    tags.sort_by { |_, count| -count }.to_h
   end
 
   private
