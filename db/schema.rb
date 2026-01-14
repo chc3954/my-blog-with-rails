@@ -10,5 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 0) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_14_222714) do
+  create_table "posts", force: :cascade do |t|
+    t.string "notion_id"
+    t.string "title"
+    t.string "slug"
+    t.text "summary"
+    t.text "content"
+    t.date "published_date"
+    t.json "tags"
+    t.string "cover_image"
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.json "toc"
+    t.index ["notion_id"], name: "index_posts_on_notion_id"
+    t.index ["slug"], name: "index_posts_on_slug"
+  end
 end
