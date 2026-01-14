@@ -34,6 +34,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: my-blog-config
+            - secretRef:
+                name: my-blog-secrets
           volumeMounts:
             - name: storage-volume
               mountPath: /rails/storage
