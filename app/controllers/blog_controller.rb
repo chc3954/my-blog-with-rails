@@ -4,6 +4,7 @@ class BlogController < ApplicationController
   end
 
   def feed
+    @total_posts_count = Post.published.count
     @tags = Post.published.flat_map(&:tags).tally.sort_by { |_tag, count| -count }.to_h
 
     if params[:tag]

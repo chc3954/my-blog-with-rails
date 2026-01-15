@@ -5,12 +5,12 @@
       <div class="sticky top-[var(--sticky-top)] space-y-4">
         <h3 class="font-semibold text-lg mb-4">Tags</h3>
         <div class="space-y-1 bg-card/30 rounded-xl p-4 border border-border">
-          <a href="<%= blog_index_path %>" data-turbo-frame="blog_feed" class="group flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-primary/10 <%= 'bg-primary/10 text-primary' if params[:tag].nil? %>">
+          <a href="<%= blog_index_path %>" data-turbo-frame="_top" class="group flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-primary/10 <%= 'bg-primary/10 text-primary' if params[:tag].nil? %>">
             <span>All</span>
-            <span class="text-xs text-muted-foreground bg-background/50 px-2 py-0.5 rounded-full"><%= @posts.count %></span>
+            <span class="text-xs text-muted-foreground bg-background/50 px-2 py-0.5 rounded-full"><%= @total_posts_count %></span>
           </a>
           <% @tags.each do |tag, count| %>
-          <a href="<%= blog_index_path(tag: tag) %>" data-turbo-frame="blog_feed" class="group flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-primary/10 <%= 'bg-primary/10 text-primary' if params[:tag] == tag %>">
+          <a href="<%= blog_index_path(tag: tag) %>" data-turbo-frame="_top" class="group flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-primary/10 <%= 'bg-primary/10 text-primary' if params[:tag] == tag %>">
             <span><%= tag %></span>
             <span class="text-xs text-muted-foreground bg-background/50 px-2 py-0.5 rounded-full"><%= count %></span>
           </a>
@@ -28,9 +28,9 @@
 
       <!-- Mobile Tags -->
       <div class="lg:hidden flex overflow-x-auto pb-4 gap-2 no-scrollbar">
-        <a href="<%= blog_index_path %>" class="shrink-0 px-4 py-1.5 rounded-full text-sm border <%= params[:tag].nil? ? 'bg-primary text-primary-foreground border-primary' : 'bg-background hover:bg-muted' %>">All</a>
+        <a href="<%= blog_index_path %>" data-turbo-frame="_top" class="shrink-0 px-4 py-1.5 rounded-full text-sm border <%= params[:tag].nil? ? 'bg-primary text-primary-foreground border-primary' : 'bg-background hover:bg-muted' %>">All</a>
         <% @tags.each do |tag, count| %>
-        <a href="<%= blog_index_path(tag: tag) %>" class="shrink-0 px-4 py-1.5 rounded-full text-sm border <%= params[:tag] == tag ? 'bg-primary text-primary-foreground border-primary' : 'bg-background hover:bg-muted' %>"><%= tag %></a>
+        <a href="<%= blog_index_path(tag: tag) %>" data-turbo-frame="_top" class="shrink-0 px-4 py-1.5 rounded-full text-sm border <%= params[:tag] == tag ? 'bg-primary text-primary-foreground border-primary' : 'bg-background hover:bg-muted' %>"><%= tag %></a>
         <% end %>
       </div>
 
