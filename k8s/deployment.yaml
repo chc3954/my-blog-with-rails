@@ -39,6 +39,26 @@ spec:
           volumeMounts:
             - name: storage-volume
               mountPath: /rails/storage
+        - name: solid-queue
+          image: ghcr.io/chc3954/my-blog-with-rails:latest
+          imagePullPolicy: Always
+          command: ["bundle", "exec", "rails", "solid_queue:start"]
+          env:
+            - name: RAILS_ENV
+              value: "production"
+            - name: RAILS_MASTER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: rails-secrets
+                  key: master-key
+          envFrom:
+            - configMapRef:
+                name: my-blog-config
+            - secretRef:
+                name: my-blog-secrets
+          volumeMounts:
+            - name: storage-volume
+              mountPath: /rails/storage
       imagePullSecrets:
         - name: ghcr-secrets
       volumes:
