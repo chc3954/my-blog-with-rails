@@ -26,6 +26,10 @@ spec:
           env:
             - name: RAILS_ENV
               value: "production"
+            - name: RAILS_MAX_THREADS
+              value: "15"
+            - name: MALLOC_ARENA_MAX
+              value: "2"
             - name: RAILS_MASTER_KEY
               valueFrom:
                 secretKeyRef:
@@ -36,6 +40,29 @@ spec:
                 name: my-blog-config
             - secretRef:
                 name: my-blog-secrets
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1024Mi"
+          livenessProbe:
+            httpGet:
+              path: /up
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /up
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
           volumeMounts:
             - name: storage-volume
               mountPath: /rails/storage
@@ -46,6 +73,10 @@ spec:
           env:
             - name: RAILS_ENV
               value: "production"
+            - name: RAILS_MAX_THREADS
+              value: "5"
+            - name: MALLOC_ARENA_MAX
+              value: "2"
             - name: RAILS_MASTER_KEY
               valueFrom:
                 secretKeyRef:
