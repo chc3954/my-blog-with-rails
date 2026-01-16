@@ -160,7 +160,6 @@ class NotionSyncService
         @html << "</div>"
         @html << "<pre class='p-4 overflow-x-auto text-sm text-gray-200'><code>#{CGI.escapeHTML(code)}</code></pre>"
         @html << "</div>"
-        @html << "</div>"
       when "image"
         url = block.image.type == "external" ? block.image.external.url : block.image.file.url
         caption = block.image.caption.map(&:plain_text).join
