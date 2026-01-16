@@ -3,6 +3,11 @@ kind: Application
 metadata:
   name: my-blog-app
   namespace: argocd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: my-blog=ghcr.io/chc3954/my-blog-with-rails
+    argocd-image-updater.argoproj.io/my-blog.update-strategy: alphabetical
+    argocd-image-updater.argoproj.io/my-blog.allow-tags: regexp:^[0-9]+$
+    argocd-image-updater.argoproj.io/write-back-method: argocd
 spec:
   project: default
   source:
