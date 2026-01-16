@@ -68,11 +68,12 @@ class NotionSyncService
     # Fetch content (blocks)
     blocks = @client.block_children(block_id: page.id).results
 
-    # Use the local BlockParser
-    parser = BlockParser.new(blocks)
-    parsed_result = parser.call
-
+    # Initialize post first to pass to parser
     post = Post.find_or_initialize_by(notion_id: page.id)
+
+    # Use the local BlockParser
+    parser = BlockParser.new(blocks, post)
+    parsed_result = parser.call
 
     title = props["Title"]&.title&.first&.plain_text || "Untitled"
     summary = props["Summary"]&.rich_text&.first&.plain_text
@@ -108,8 +109,9 @@ class NotionSyncService
   end
 
   class BlockParser
-    def initialize(blocks)
+    def initialize(blocks, post = nil)
       @blocks = blocks
+      @post = post
       @toc = []
       @html = []
     end
@@ -158,9 +160,38 @@ class NotionSyncService
         @html << "</div>"
         @html << "<pre class='p-4 overflow-x-auto text-sm text-gray-200'><code>#{CGI.escapeHTML(code)}</code></pre>"
         @html << "</div>"
+        @html << "</div>"
       when "image"
         url = block.image.type == "external" ? block.image.external.url : block.image.file.url
         caption = block.image.caption.map(&:plain_text).join
+
+        # Download and attach image if post is present
+        if @post.present? && url.present?
+          begin
+             # Check if we already have this image attached (deduplication logic could be added here,
+             # but simpler to just attach new one and return its URL for now.
+             # For a robust solution, we might check filename or checksum, but Notion URLs change.
+             # We will attach logic:
+             downloaded_image = URI.open(url)
+             filename = File.basename(URI.parse(url).path)
+
+             # Need to attach efficiently.
+             # Warning: Attaching inside a loop can be slow.
+             # Optimally we should collect attachments and save later, but to get the URL we need the blob created.
+             blob = ActiveStorage::Blob.create_and_upload!(
+               io: downloaded_image,
+               filename: filename,
+               content_type: downloaded_image.content_type
+             )
+             @post.content_images.attach(blob)
+
+             # Generate URL for the blob
+             url = Rails.application.routes.url_helpers.rails_blob_url(blob, only_path: true)
+          rescue => e
+             Rails.logger.error("Failed to process content image: #{e.message}")
+          end
+        end
+
         @html << "<figure class='my-8'>"
         @html << "<img src='#{url}' alt='#{caption}' class='rounded-lg w-full'>"
         @html << "<figcaption class='mt-2 text-center text-sm text-gray-500'>#{caption}</figcaption>" unless caption.empty?

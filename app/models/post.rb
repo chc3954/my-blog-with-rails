@@ -4,6 +4,7 @@ class Post < ApplicationRecord
   validates :notion_id, presence: true, uniqueness: true
 
   has_one_attached :cover
+  has_many_attached :content_images
 
   scope :published, -> { where(status: "Published").order(published_date: :desc) }
 
