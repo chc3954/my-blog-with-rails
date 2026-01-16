@@ -11,13 +11,19 @@ class NotionSyncService
 
     # 1. Fetch all published pages from Notion
     pages = fetch_all_pages
+    current_notion_ids = pages.map(&:id)
 
     # 2. Sync each page
     pages.each do |page|
       sync_page(page)
     end
 
-    Rails.logger.info "Notion sync complete. Synced #{pages.count} posts."
+    # 3. Remove local posts that are no longer in Notion (or not published)
+    posts_to_delete = Post.where.not(notion_id: current_notion_ids)
+    deleted_count = posts_to_delete.count
+    posts_to_delete.destroy_all
+
+    Rails.logger.info "Notion sync complete. Synced #{pages.count} posts. Deleted #{deleted_count} posts."
   end
 
   private
