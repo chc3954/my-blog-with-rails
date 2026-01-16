@@ -12,6 +12,14 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
+                script {
+                    // Check if the last commit message contains [skip ci]
+                    def commitMsg = sh(script: "git log -1 --pretty=%B", returnStdout: true).trim()
+                    if (commitMsg.contains("jenkins:")) {
+                        currentBuild.result = 'SUCCESS'
+                        error("Skipping build as commit message contains jenkins:")
+                    }
+                }
             }
         }
 
@@ -57,7 +65,7 @@ pipeline {
                         if (changed) {
                             // Stage, commit and push
                             sh "git add k8s/deployment.yaml"
-                            sh "git commit -m 'chore: update deployment image tag to ${IMAGE_TAG} [skip ci]'"
+                            sh "git commit -m 'jenkins: update deployment image tag to ${IMAGE_TAG}'"
                             
                             // Set remote URL with credentials
                             // Assuming the repo URL is https://github.com/chc3954/my-blog-with-rails.git
@@ -77,7 +85,12 @@ pipeline {
             echo "Successfully deployed version ${IMAGE_TAG}!"
         }
         failure {
-            echo "Pipeline failed."
+            // Only report failure if it wasn't a deliberate abort
+            script {
+                if (currentBuild.result != 'SUCCESS') {
+                    echo "Pipeline failed."
+                }
+            }
         }
     }
 }
