@@ -16,4 +16,5 @@ production:
 
   sync_notion_posts:
     class: NotionSyncJob
-    schedule: every hour
+    queue: default
+    schedule: "*/10 * * * *"

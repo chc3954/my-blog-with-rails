@@ -1,3 +1,5 @@
+require "open-uri"
+
 class NotionSyncService
   def initialize
     @client = Notion::Client.new(token: ENV["NOTION_TOKEN"])
@@ -84,6 +86,17 @@ class NotionSyncService
       cover_image: cover,
       status: status
     )
+
+    # Handle active storage attachment for cover image
+    if cover.present? && !post.cover.attached?
+      begin
+        downloaded_image = URI.open(cover)
+        filename = File.basename(URI.parse(cover).path)
+        post.cover.attach(io: downloaded_image, filename: filename)
+      rescue => e
+        Rails.logger.error("Failed to attach cover image for #{slug}: #{e.message}")
+      end
+    end
 
     post.save!
   end
