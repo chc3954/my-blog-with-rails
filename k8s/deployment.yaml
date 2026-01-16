@@ -26,8 +26,10 @@ spec:
           env:
             - name: RAILS_ENV
               value: "production"
+            - name: WEB_CONCURRENCY
+              value: "2"
             - name: RAILS_MAX_THREADS
-              value: "15"
+              value: "10"
             - name: MALLOC_ARENA_MAX
               value: "2"
             - name: RAILS_MASTER_KEY
@@ -46,7 +48,7 @@ spec:
               memory: "512Mi"
             limits:
               cpu: "1000m"
-              memory: "1024Mi"
+              memory: "2048Mi"
           livenessProbe:
             httpGet:
               path: /up
@@ -74,7 +76,7 @@ spec:
             - name: RAILS_ENV
               value: "production"
             - name: RAILS_MAX_THREADS
-              value: "5"
+              value: "10"
             - name: MALLOC_ARENA_MAX
               value: "2"
             - name: RAILS_MASTER_KEY

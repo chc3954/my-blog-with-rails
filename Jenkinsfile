@@ -4,8 +4,8 @@ pipeline {
     environment {
         REGISTRY = "ghcr.io"
         IMAGE_NAME = "chc3954/my-blog-with-rails"
-        // Use timestamp for sortable tags (required for ArgoCD Image Updater alphabetical strategy)
-        IMAGE_TAG = sh(script: "date +%Y%m%d%H%M%S", returnStdout: true).trim()
+        // Use timestamp for sortable tags. Prefix with 'v' to ensure it sorts AFTER hex git hashes (v > a)
+        IMAGE_TAG = sh(script: 'echo v$(date +%Y%m%d%H%M%S)', returnStdout: true).trim()
     }
 
     stages {
