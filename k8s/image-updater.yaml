@@ -4,15 +4,16 @@ metadata:
   name: my-blog-image-updater
   namespace: argocd
 spec:
+  namespace: argocd
   applicationRefs:
     - namePattern: my-blog-app # Matches the ArgoCD Application name
-  images:
-    - alias: my-blog
-      imageName: ghcr.io/chc3954/my-blog-with-rails
-      commonUpdateSettings:
-        updateStrategy: latest # Updates to the most recent creation date (newest-build)
-        allowTags: regexp:^v[0-9]+$ # Only allow tags starting with 'v' followed by numbers
-        pullSecret: my-blog/ghcr-secrets # Uses the secret in argocd namespace
-        forceUpdate: true # Ensure update even if not currently running (useful for kustomize/helm overrides)
+      images:
+        - alias: my-blog
+          imageName: ghcr.io/chc3954/my-blog-with-rails
+          commonUpdateSettings:
+            updateStrategy: latest # Updates to the most recent creation date (newest-build)
+            allowTags: regexp:^v[0-9]+$ # Only allow tags starting with 'v' followed by numbers
+            pullSecret: pullsecret:argocd/ghcr-secret # Uses the secret in argocd namespace
+            forceUpdate: true # Ensure update even if not currently running
   writeBackConfig:
     method: git # Configures write-back to the Git repository
