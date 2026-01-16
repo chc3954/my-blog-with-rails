@@ -3,12 +3,7 @@ kind: Application
 metadata:
   name: my-blog-app
   namespace: argocd
-  annotations:
-    argocd-image-updater.argoproj.io/image-list: my-blog=ghcr.io/chc3954/my-blog-with-rails
-    argocd-image-updater.argoproj.io/my-blog.update-strategy: latest
-    argocd-image-updater.argoproj.io/my-blog.allow-tags: regexp:^v[0-9]+$
-    argocd-image-updater.argoproj.io/my-blog.pull-secret: my-blog/ghcr-secrets
-    argocd-image-updater.argoproj.io/write-back-method: git
+  annotations: {}
 spec:
   project: default
   source:
