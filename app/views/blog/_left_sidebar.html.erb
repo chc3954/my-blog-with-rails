@@ -1,0 +1,17 @@
+    <div class="hidden lg:block lg:col-span-1">
+      <div class="sticky top-[var(--sticky-top)] space-y-4">
+        <h3 class="font-semibold text-lg mb-4">Tags</h3>
+        <div class="space-y-1 bg-card/30 rounded-xl p-4 border border-border">
+          <a href="<%= blog_index_path %>" data-turbo-frame="_top" class="group flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-primary/10 <%= 'bg-primary/10 text-primary' if params[:tag].nil? %>">
+            <span>All</span>
+            <span class="text-xs text-muted-foreground bg-background/50 px-2 py-0.5 rounded-full"><%= total_posts_count %></span>
+          </a>
+          <% tags.each do |tag, count| %>
+          <a href="<%= blog_index_path(tag: tag) %>" data-turbo-frame="_top" class="group flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-primary/10 <%= 'bg-primary/10 text-primary' if params[:tag] == tag %>">
+            <span><%= tag %></span>
+            <span class="text-xs text-muted-foreground bg-background/50 px-2 py-0.5 rounded-full"><%= count %></span>
+          </a>
+          <% end %>
+        </div>
+      </div>
+    </div>
