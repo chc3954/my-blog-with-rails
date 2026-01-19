@@ -72,7 +72,7 @@ class NotionSyncService
     post = Post.find_or_initialize_by(notion_id: page.id)
 
     # Use the local BlockParser
-    parser = BlockParser.new(blocks, post)
+    parser = BlockParser.new(blocks, @client, post)
     parsed_result = parser.call
 
     title = props["Title"]&.title&.first&.plain_text || "Untitled"
@@ -109,8 +109,9 @@ class NotionSyncService
   end
 
   class BlockParser
-    def initialize(blocks, post = nil)
+    def initialize(blocks, client, post = nil)
       @blocks = blocks
+      @client = client
       @post = post
       @toc = []
       @html = []
@@ -198,6 +199,8 @@ class NotionSyncService
       when "quote"
          text = render_rich_text(block.quote.rich_text)
          @html << "<blockquote class='border-l-4 border-blue-500 pl-4 py-2 my-6 italic text-gray-300 bg-gray-800/50 rounded-r-lg'>#{text}</blockquote>"
+      when "table"
+        render_table(block)
       end
     rescue => e
       # Fallback for unhandled blocks or errors
@@ -221,6 +224,38 @@ class NotionSyncService
 
         content
       end.join
+    end
+
+    def render_table(block)
+      table_rows = @client.block_children(block_id: block.id).results
+
+      has_header = block.table.has_column_header
+
+      @html << "<div class='not-prose my-8 overflow-x-auto rounded-lg border border-gray-700'>"
+      @html << "<table class='w-full text-sm text-left text-gray-300'>"
+
+      if has_header && table_rows.any?
+        header_row = table_rows.shift
+        @html << "<thead class='text-xs uppercase bg-gray-800 text-gray-300'>"
+        @html << "<tr>"
+        header_row.table_row.cells.each do |cell|
+          @html << "<th scope='col' class='px-6 py-3'>#{render_rich_text(cell)}</th>"
+        end
+        @html << "</tr>"
+        @html << "</thead>"
+      end
+
+      @html << "<tbody>"
+      table_rows.each do |row|
+        @html << "<tr class='bg-[#1e1e1e] border-b border-gray-700 hover:bg-gray-700/50'>"
+        row.table_row.cells.each do |cell|
+           @html << "<td class='px-6 py-4'>#{render_rich_text(cell)}</td>"
+        end
+        @html << "</tr>"
+      end
+      @html << "</tbody>"
+      @html << "</table>"
+      @html << "</div>"
     end
   end
 end
