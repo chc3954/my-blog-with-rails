@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_19_191449) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_19_204312) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -55,6 +55,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_19_191449) do
     t.datetime "notion_updated_at"
     t.index ["notion_id"], name: "index_posts_on_notion_id"
     t.index ["slug"], name: "index_posts_on_slug"
+    t.index ["status", "published_date"], name: "index_posts_on_status_and_published_date"
   end
 
   create_table "solid_queue_blocked_executions", force: :cascade do |t|

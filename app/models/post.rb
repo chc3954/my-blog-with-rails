@@ -29,4 +29,14 @@ class Post < ApplicationRecord
       cover_image
     end
   end
+
+  def thumbnail_url
+    if cover.attached?
+      # Resize to generic card size (e.g. 800w)
+      variant = cover.variant(resize_to_limit: [ 800, 600 ])
+      Rails.application.routes.url_helpers.rails_representation_url(variant, only_path: true)
+    else
+      cover_image
+    end
+  end
 end
