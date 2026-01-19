@@ -65,11 +65,20 @@ class NotionSyncService
 
     return unless slug.present? # Skip if no slug
 
+    # Initialize post
+    post = Post.find_or_initialize_by(notion_id: page.id)
+
+    # Check for updates
+    last_edited_time = page.last_edited_time.to_datetime
+    if post.persisted? && post.notion_updated_at.present? && post.notion_updated_at >= last_edited_time
+      Rails.logger.info "Skipping #{slug} (up to date)"
+      return
+    end
+
+    Rails.logger.info "Syncing #{slug}..."
+
     # Fetch content (blocks)
     blocks = @client.block_children(block_id: page.id).results
-
-    # Initialize post first to pass to parser
-    post = Post.find_or_initialize_by(notion_id: page.id)
 
     # Use the local BlockParser
     parser = BlockParser.new(blocks, @client, post)
@@ -91,11 +100,12 @@ class NotionSyncService
       published_date: date_str,
       tags: tags, # Active Record JSON serialization handles array automatically
       cover_image: cover,
-      status: status
+      status: status,
+      notion_updated_at: last_edited_time
     )
 
     # Handle active storage attachment for cover image
-    if cover.present? && !post.cover.attached?
+    if cover.present?
       begin
         downloaded_image = URI.open(cover)
         filename = File.basename(URI.parse(cover).path)
