@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: web
-          image: ghcr.io/chc3954/my-blog-with-rails:v20260119143910
+          image: ghcr.io/chc3954/my-blog-with-rails:v20260119144710
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
@@ -69,7 +69,7 @@ spec:
             - name: storage-volume
               mountPath: /rails/storage
         - name: solid-queue
-          image: ghcr.io/chc3954/my-blog-with-rails:v20260119143910
+          image: ghcr.io/chc3954/my-blog-with-rails:v20260119144710
           imagePullPolicy: Always
           command: ["bundle", "exec", "rails", "solid_queue:start"]
           env:
